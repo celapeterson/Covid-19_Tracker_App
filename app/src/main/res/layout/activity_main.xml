@@ -41,7 +41,7 @@
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
         android:onClick="nearMeButton"
-        android:text="COVID-19 Casses Near Me"
+        android:text="COVID-19 Cases Near Me"
         app:layout_constraintBottom_toTopOf="@+id/button4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
