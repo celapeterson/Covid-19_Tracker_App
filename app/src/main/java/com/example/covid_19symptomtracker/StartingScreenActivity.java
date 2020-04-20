@@ -27,4 +27,12 @@ public class StartingScreenActivity extends AppCompatActivity {
         Intent intent = new Intent(StartingScreenActivity.this, SymptomTrackerActivity.class);
         startActivity(intent);
     }
+
+    public void resultsButtonOnClick(View view) {
+
+        Intent intent = new Intent(this, PastResultsScreen.class);
+        startActivity(intent);
+
+    }
+
 }
