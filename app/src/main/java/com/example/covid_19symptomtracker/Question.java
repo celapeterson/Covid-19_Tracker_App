@@ -1,15 +1,12 @@
 package com.example.covid_19symptomtracker;
 
 public class Question {
-    private static String content;
-    private int num;
+    private String content;
+    public String answer;
 
-    public Question(String content, int num) {
+    public Question(String content) {
         this.content = content;
-        this.num = num;
     }
 
-    public static String getContent() {return content;}
-
-    public int getNum() {return num;}
+    public String getContent() {return content;}
 }

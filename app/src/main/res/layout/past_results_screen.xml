@@ -8,32 +8,5 @@
     android:padding="16dp"
     tools:context=".PastResultsScreen">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="339dp"
-        android:layout_height="94dp"
-        android:layout_marginTop="40dp"
-        android:text="Past Results"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/returnHomeButton"
-        android:layout_width="117dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="16dp"
-        android:background="@color/colorAccent"
-        android:text="Home Screen"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/covidImageView" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
