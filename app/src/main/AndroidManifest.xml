@@ -17,6 +17,7 @@
             android:label="@string/title_activity_heat_map"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".SymptomTrackerActivity" />
+        <activity android:name=".PastResults" />
         <activity android:name=".StartingScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
