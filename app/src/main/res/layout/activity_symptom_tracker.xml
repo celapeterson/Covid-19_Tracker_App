@@ -13,61 +13,45 @@
         android:id="@+id/textViewQuestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="HERE WILL BE THE QUESTION\nHERE WILL BE THE QUESTION\nHERE WILL BE THE QUESTION\n"
+        android:layout_marginTop="36dp"
+        android:text="This is where the questionAndAnswers will go"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.961" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
+    <ScrollView
+        android:id="@+id/optionScrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textViewQuestion"
+        app:layout_constraintVertical_bias="0.491">
 
-        <RadioButton
-            android:id="@+id/option1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/optionLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Option 1" />
+            android:orientation="vertical" />
 
-        <RadioButton
-            android:id="@+id/option2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 2" />
-
-        <RadioButton
-            android:id="@+id/option3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 3" />
-
-        <RadioButton
-            android:id="@+id/option4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Option 4" />
-    </RadioGroup>
+    </ScrollView>
 
     <Button
         android:id="@+id/nextButton"
         android:layout_width="193dp"
         android:layout_height="46dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginBottom="72dp"
         android:background="@color/colorAccent"
         android:text="Next"
         android:textColor="@color/colorWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
