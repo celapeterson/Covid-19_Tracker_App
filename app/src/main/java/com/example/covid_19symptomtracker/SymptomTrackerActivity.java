@@ -1,67 +1,157 @@
 package com.example.covid_19symptomtracker;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SymptomTrackerActivity extends AppCompatActivity {
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-    int question_id;
-    TextView question_text;
-    EditText answer_text;
-    Question[] questions;
+import com.example.covid_19symptomtracker.database.DBHelper;
+import com.example.covid_19symptomtracker.database.Option;
+import com.example.covid_19symptomtracker.database.Question;
+import com.example.covid_19symptomtracker.database.QuestionOption;
+import com.example.covid_19symptomtracker.database.Response;
+import com.example.covid_19symptomtracker.database.Result;
+import com.example.covid_19symptomtracker.database.Survey;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+
+public class SymptomTrackerActivity extends AppCompatActivity {
+    private DBHelper db;
+    int questionIndex = 0;
+    ArrayList<QuestionOption> questionOptionList;
+    ArrayList<Result> resultList;
+    ArrayList<Response> responses;
+    QuestionOption currentQuestion;
+    TextView questionTextView;
+    LinearLayout optionGroup;
+    ArrayList<CheckBox> currentCheckBoxes;
+    Button nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom_tracker);
 
-        question_text = (TextView) findViewById(R.id.textViewQuestion);
-        answer_text = (EditText) findViewById(R.id.editTextAnswer);
+        db = DBHelper.getInstance(this);
 
-        Question question0 = new Question("This is Question 0");
-        Question question1 = new Question("This is Question 1");
-        Question question2 = new Question("This is Question 2");
-        Question question3 = new Question("This is Question 3");
-        Question question4 = new Question("This is Question 4");
-        Question question5 = new Question("This is Question 5");
-        questions = new Question[]{question0, question1, question2, question3, question4, question5};
+        db.clearDatabase("survey");
+        db.clearDatabase("question");
+        db.clearDatabase("option");
+        db.clearDatabase("response");
 
-        question_id = 0;
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        String date = dateFormat.format(new Date());
+        final Survey survey = db.createSurvey(date);
+        Log.d("Survey Created", "surveyID: " + survey.getId() + " Date: " + survey.getDate());
 
-        String questionContent = questions[question_id].getContent();
-        question_text.setText(questionContent);
+        String testQuestion = "This question is a test.";
+        ArrayList<String> testOptions = new ArrayList<>();
+        testOptions.add("Option 1");
+        testOptions.add("Option 2");
+        testOptions.add("Option 3");
+        int questionID = db.createQuestion(testQuestion, testOptions);
+        Log.d("Question Created", "questionID: " + questionID + " question: " + testQuestion);
+
+        String testQuestion1 = "This a second test question.";
+        ArrayList<String> testOptions1 = new ArrayList<>();
+        testOptions1.add("Option 1");
+        testOptions1.add("Option 2");
+        testOptions1.add("Option 3");
+        testOptions1.add("Option 4");
+        long questionID1 = db.createQuestion(testQuestion1, testOptions1);
+        Log.d("question_ID", "question_id: " + questionID1);
+
+        questionOptionList = db.getAllQuestions();
+        resultList = new ArrayList<>();
+        currentQuestion = questionOptionList.get(questionIndex);
+        questionTextView = (TextView) findViewById(R.id.textViewQuestion);
+        optionGroup = (LinearLayout) findViewById(R.id.optionLayout);
+        nextButton = (Button) findViewById(R.id.nextButton);
+        setQuestionView();
+        currentCheckBoxes = setOptionGroup();
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<Option> selectedOptions = getSelectedOptions();
+                responses = new ArrayList<>();
+                for(Option option : selectedOptions) {
+                    int surveyID = survey.getId();
+                    int questionID = currentQuestion.getQuestion().getId();
+                    int optionNum = option.getOptionNum();
+                    String response = option.getOptionText();
+                    responses.add(new Response(surveyID, questionID, optionNum, response));
+                }
+
+                Question question = currentQuestion.getQuestion();
+                resultList.add(new Result(question, responses));
+
+                optionGroup.removeAllViews();
+                questionIndex++;
+
+                if(questionIndex < questionOptionList.size()) {
+                    currentQuestion = questionOptionList.get(questionIndex);
+                    setQuestionView();
+                    currentCheckBoxes = setOptionGroup();
+                } else {
+                    db.saveResults(resultList);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("surveyID", survey.getId());
+                    bundle.putString("date", survey.getDate());
+                    bundle.putInt("numQuestions", questionIndex);
+                    Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
-    public void questionTracker() {
-        if (question_id == -1 ) {
-            Intent start = new Intent(SymptomTrackerActivity.this, StartingScreenActivity.class);
-            startActivity(start);
-        } else if (question_id == questions.length) {
-            Intent results = new Intent(SymptomTrackerActivity.this, SymptomTrackerActivity.class);
-            startActivity(results);
-        } else {
-            String questionContent = questions[question_id].getContent();
-            question_text.setText(questionContent);
+    public void setQuestionView() {
+        questionTextView.setText(currentQuestion.getQuestion().getQuestionText());
+    }
 
-            String answerContent = questions[question_id].answer;
-            answer_text.setText(answerContent);
+    public ArrayList<CheckBox> setOptionGroup() {
+        ArrayList<Option> options = currentQuestion.getOptions();
+        ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+
+        for(Option option : options) {
+            String optionText = option.getOptionText();
+            CheckBox newOption = new CheckBox(this);
+            newOption.setId(option.getOptionNum());
+            newOption.setText(optionText);
+            newOption.setGravity(Gravity.CENTER);
+            optionGroup.addView(newOption);
+            checkBoxes.add(newOption);
         }
+
+        return checkBoxes;
     }
 
-    public void prevQuestion(View view) {
-        question_id--;
-        questionTracker();
-    }
+    public ArrayList<Option> getSelectedOptions() {
+        ArrayList<Option> selectedOptions = new ArrayList<>();
 
-    public void nextQuestion(View view) {
-        EditText editText = (EditText) findViewById(R.id.editTextAnswer);
-        questions[question_id].answer = editText.getText().toString();
-        question_id++;
-        questionTracker();
+        for(CheckBox box : currentCheckBoxes) {
+            if(box.isChecked()) {
+                int questionID = currentQuestion.getQuestion().getId();
+                int optionNum = box.getId();
+                String optionText = box.getText().toString();
+                selectedOptions.add(new Option(questionID, optionNum, optionText));
+                box.setChecked(false);
+            }
+        }
+
+        return selectedOptions;
     }
 }
