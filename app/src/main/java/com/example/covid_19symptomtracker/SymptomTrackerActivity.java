@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 public class SymptomTrackerActivity extends AppCompatActivity {
     private DBHelper db;
     int questionIndex = 0;
@@ -36,6 +37,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
     LinearLayout optionGroup;
     ArrayList<CheckBox> currentCheckBoxes;
     Button nextButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

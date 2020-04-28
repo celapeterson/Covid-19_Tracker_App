@@ -16,18 +16,10 @@ public class StartingScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starting_screen);
-
-        Button buttonStartTracker = findViewById(R.id.startButton);
-        buttonStartTracker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTracker();
-            }
-        });
     }
 
-    private void startTracker() {
-        Intent intent = new Intent(StartingScreenActivity.this, SymptomTrackerActivity.class);
+    public void startTracker(View view) {
+        Intent intent = new Intent(this, SymptomTrackerActivity.class);
         startActivity(intent);
     }
 
