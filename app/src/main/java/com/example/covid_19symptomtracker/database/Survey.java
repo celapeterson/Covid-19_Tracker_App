@@ -3,7 +3,6 @@ package com.example.covid_19symptomtracker.database;
 public class Survey {
     private int id;
     private String date;
-    private int numQuestions;
 
     public Survey(int id, String date) {
         this.id = id;

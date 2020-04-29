@@ -24,7 +24,7 @@ public class StartingScreenActivity extends AppCompatActivity {
     }
 
     public void resultsButtonOnClick(View view) {
-        Intent intent = new Intent(this, PastResultsScreen.class);
+        Intent intent = new Intent(this, PastResults.class);
         startActivity(intent);
 
     }

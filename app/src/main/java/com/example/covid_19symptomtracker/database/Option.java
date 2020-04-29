@@ -2,6 +2,7 @@ package com.example.covid_19symptomtracker.database;
 
 public class Option {
     private int questionID;
+    // refers to the order in which the questions are shown
     private int optionNum;
     private String option;
 
