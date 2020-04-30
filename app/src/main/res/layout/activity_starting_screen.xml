@@ -60,5 +60,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startButton" />
 
+    <Button
+        android:id="@+id/mapButton"
+        android:layout_width="215dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorAccent"
+        android:text="View Cases Near You"
+        android:textColor="@color/colorWhite"
+        android:onClick="mapButtonOnClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultsButton"
+        tools:ignore="OnClick" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,4 +29,8 @@ public class StartingScreenActivity extends AppCompatActivity {
 
     }
 
+    public void mapButtonOnClick(View view) {
+        Intent intent = new Intent(this, HeatMapActivity.class);
+        startActivity(intent);
+    }
 }
