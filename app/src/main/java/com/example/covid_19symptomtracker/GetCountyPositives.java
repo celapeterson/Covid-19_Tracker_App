@@ -16,8 +16,8 @@ import java.net.URL;
 
 public class GetCountyPositives extends AsyncTask<Void, Void, Void> {
     private String jsonData = ""; // Holds data from JSON of WI Covid-19 cases
-    private String[] counties = new String[72]; // Holds Names of each county
-    private int[] cases = new int[72]; // Holds number of Covid-19 cases in each county
+    String[] counties = new String[72]; // Holds Names of each county
+    int[] cases = new int[72]; // Holds number of Covid-19 cases in each county
 
     /**
      * Retrieves JSON of Covid-19 cases in WI from DHS website
