@@ -18,6 +18,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:text="Back"
+        android:onClick="backButtonOnClick"
         app:layout_constraintBottom_toTopOf="@+id/listView"
         app:layout_constraintEnd_toStartOf="@+id/textView"
         app:layout_constraintStart_toStartOf="parent"
