@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MapKeyFragment">
+
+<TextView
+    android:id="@+id/mapKeyFragmentTV"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapKeyFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+    android:textSize="60dp"
+    android:textColor="@android:color/holo_red_light"
+    android:text="@string/next"
+    android:gravity="center"/>
+</LinearLayout>
