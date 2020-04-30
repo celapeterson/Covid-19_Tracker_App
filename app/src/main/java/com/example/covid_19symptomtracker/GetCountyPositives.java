@@ -80,7 +80,7 @@ public class GetCountyPositives extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
 
-        // TODO: Export county[] and cases[] to HeatMapActivity
+        // TODO: Export counties[] and cases[] to HeatMapActivity
 
         super.onPostExecute(aVoid);
     }
