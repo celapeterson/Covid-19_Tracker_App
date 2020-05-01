@@ -1,7 +1,6 @@
 package com.example.covid_19symptomtracker;
 
 import android.os.AsyncTask;
-import android.renderscript.ScriptGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,9 +14,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-// TODO: May need to change AsyncTask input types
 public class GetCountyPositives extends AsyncTask<Void, Void, Void> {
-    String jsonData = ""; // Holds data from JSON of WI Covid-19 cases
+    private String jsonData = ""; // Holds data from JSON of WI Covid-19 cases
     String[] counties = new String[72]; // Holds Names of each county
     int[] cases = new int[72]; // Holds number of Covid-19 cases in each county
 
@@ -45,24 +43,29 @@ public class GetCountyPositives extends AsyncTask<Void, Void, Void> {
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
+            /* Use Buffered Reader to get JSON data from URL, and that data arrives as a String;
+            * convert data String into JSONObject, extract JSONArray of County names and Covid-19
+            * cases from that JSONObject, then loop through the JSONArray extracting one JSONObject
+            * for each County. This JSONObject for the County holds the County name and number of
+            * positive Covid-19 cases.
+            */
             String line = ""; // Holds line from JSON
-            // Read lines from JSON
             while(line != null) {
                 line = bufferedReader.readLine();
                 jsonData = jsonData + line;
             }
             // Convert data to JSON object
-            JSONObject unformatted = new JSONObject(jsonData);
+            JSONObject unformattedJSON = new JSONObject(jsonData);
             // Extract specific JSON Array we want
-            JSONArray countyPositives = unformatted.getJSONArray("features");
+            JSONArray countyPositives = unformattedJSON.getJSONArray("features");
 
-            // TODO: Translate Javascript into Java
-            // TODO: Parse JSON Array
-//            // Populate counties and cases arrays
-//            for(int i = 1; i <= 72; i++) {
-//                counties[i-1] = countyPositives[i].NAME;
-//                cases[i-1] = countyPositives[i].POSITIVE;
-//            }
+            // Populate counties and cases arrays
+            for(int i = 1; i <= 72; i++) {
+                JSONObject countyAttributes = countyPositives.getJSONObject(i);
+
+                counties[i-1] = (String) countyAttributes.get("NAME");
+                cases[i-1] = (int) countyAttributes.get("POSITIVE");
+            }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -71,14 +74,13 @@ public class GetCountyPositives extends AsyncTask<Void, Void, Void> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
 
-        // TODO: Export county[] and cases[] to HeatMapActivity
+        // TODO: Export counties[] and cases[] to HeatMapActivity
 
         super.onPostExecute(aVoid);
     }

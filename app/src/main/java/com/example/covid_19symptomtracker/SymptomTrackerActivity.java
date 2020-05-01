@@ -55,22 +55,30 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         final Survey survey = db.createSurvey(date);
         Log.d("Survey Created", "surveyID: " + survey.getId() + " Date: " + survey.getDate());
 
-        String testQuestion = "This question is a test.";
-        ArrayList<String> testOptions = new ArrayList<>();
-        testOptions.add("Option 1");
-        testOptions.add("Option 2");
-        testOptions.add("Option 3");
-        int questionID = db.createQuestion(testQuestion, testOptions);
-        Log.d("Question Created", "questionID: " + questionID + " question: " + testQuestion);
+        String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19? (Select any/all that apply)";
+        ArrayList<String> emergencySymptoms = new ArrayList<>();
+        emergencySymptoms.add("Trouble breathing");
+        emergencySymptoms.add("Persistent pain or pressure in the chest");
+        emergencySymptoms.add("New confusion/disorientation");
+        emergencySymptoms.add("Inability to wake after sleeping");
+        emergencySymptoms.add("Bluish lips or face");
+        emergencySymptoms.add("Any other symptoms that are severe that concern you");
+        int questionID = db.createQuestion(emergencyQuestion, emergencySymptoms);
+        Log.d("Emergency symptoms question created", "questionID: " + questionID + " question: " + emergencyQuestion);
 
-        String testQuestion1 = "This a second test question.";
-        ArrayList<String> testOptions1 = new ArrayList<>();
-        testOptions1.add("Option 1");
-        testOptions1.add("Option 2");
-        testOptions1.add("Option 3");
-        testOptions1.add("Option 4");
-        long questionID1 = db.createQuestion(testQuestion1, testOptions1);
-        Log.d("question_ID", "question_id: " + questionID1);
+        String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19? (Select any/all that apply)";
+        ArrayList<String> commonSymptoms = new ArrayList<>();
+        commonSymptoms.add("Fever");
+        commonSymptoms.add("Cough");
+        commonSymptoms.add("Shortness of breath");
+        commonSymptoms.add("Chills");
+        commonSymptoms.add("Repeated shaking with chills");
+        commonSymptoms.add("Muscle pain");
+        commonSymptoms.add("Headache");
+        commonSymptoms.add("Sore throat");
+        commonSymptoms.add("New loss of smell or taste");
+        long questionID1 = db.createQuestion(commonQuestion, commonSymptoms);
+        Log.d("Common symptoms question created", "question_id: " + questionID1);
 
         questionOptionList = db.getAllQuestions();
         resultList = new ArrayList<>();
@@ -131,7 +139,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
             CheckBox newOption = new CheckBox(this);
             newOption.setId(option.getOptionNum());
             newOption.setText(optionText);
-            newOption.setGravity(Gravity.CENTER);
+            newOption.setGravity(Gravity.LEFT);
             optionGroup.addView(newOption);
             checkBoxes.add(newOption);
         }
