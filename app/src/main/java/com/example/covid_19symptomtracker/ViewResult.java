@@ -28,7 +28,7 @@ public class ViewResult extends AppCompatActivity {
         Survey survey = PastResults.surveys.get(survey_id);
         ArrayList<QuestionOption> questions = PastResults.db.getAllQuestions();
         // numQuestion to be changed to the total number on questions
-        ArrayList<Result> results = PastResults.db.getResultsForSurvey(survey, 1);
+        ArrayList<Result> results = PastResults.db.getResultsForSurvey(survey, 2);
 
         String resultsView = "";
         for (int i = 0; i < questions.size(); i++) {
