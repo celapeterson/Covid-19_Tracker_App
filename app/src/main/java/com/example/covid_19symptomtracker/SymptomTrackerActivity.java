@@ -139,7 +139,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
             CheckBox newOption = new CheckBox(this);
             newOption.setId(option.getOptionNum());
             newOption.setText(optionText);
-            newOption.setGravity(Gravity.CENTER);
+            newOption.setGravity(Gravity.LEFT);
             optionGroup.addView(newOption);
             checkBoxes.add(newOption);
         }
