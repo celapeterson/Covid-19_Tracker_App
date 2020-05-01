@@ -122,6 +122,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return survey;
     }
 
+    public ArrayList<Survey> getSurveys() {
+        ArrayList<Survey> surveys = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM Surveys";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        int idIndex = c.getColumnIndex(KEY_SID);
+        int dateIndex = c.getColumnIndex(KEY_DATE);
+
+        if(c.moveToFirst()) {
+            do {
+                int surveyID = c.getInt(idIndex);
+                String dateText = c.getString(dateIndex);
+                Survey survey = new Survey(surveyID, dateText);
+                surveys.add(survey);
+            } while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return surveys;
+    }
+
     public int createQuestion(String question, ArrayList<String> options) {
         SQLiteDatabase db = this.getWritableDatabase();
 

@@ -16,10 +16,11 @@
         <activity
             android:name=".HeatMapActivity"
             android:label="@string/title_activity_heat_map"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SymptomTrackerActivity" />
-        <activity android:name=".SurveyFinishedActivity"></activity>
+        <activity android:name=".SurveyFinishedActivity" />
         <activity android:name=".PastResults" />
+        <activity android:name=".ViewResult" />
         <activity android:name=".StartingScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
