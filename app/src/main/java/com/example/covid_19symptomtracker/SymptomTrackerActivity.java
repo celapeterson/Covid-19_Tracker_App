@@ -3,6 +3,8 @@ package com.example.covid_19symptomtracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -89,8 +91,9 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                         int surveyID = survey.getId();
                         int questionID = currentQuestion.getQuestion().getId();
                         int optionNum = option.getOptionNum();
+                        int optionScore = option.getScore();
                         String response = option.getOptionText();
-                        responses.add(new Response(surveyID, questionID, optionNum, response));
+                        responses.add(new Response(surveyID, questionID, optionNum, response, optionScore));
                     }
 
                     Question question = currentQuestion.getQuestion();
@@ -110,12 +113,19 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                         }
                     } else {
                         db.saveResults(resultList);
-                        Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
-                        startActivity(intent);
+                        goToSurveyFinished();
                     }
                 }
             }
         });
+    }
+
+    private void goToSurveyFinished() {
+        int score = 0;
+        // add score from results
+        Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
+        intent.putExtra("score", score);
+        startActivity(intent);
     }
 
     @Override
@@ -174,7 +184,14 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                 int questionID = currentQuestion.getQuestion().getId();
                 int optionNum = box.getId();
                 String optionText = box.getText().toString();
-                selectedOptions.add(new Option(questionID, optionNum, optionText));
+                ArrayList<Option> options = db.getAllOptionsForQuestion(questionID);
+                int optionScore = 0;
+                for (int i = 0; i < options.size(); i++) {
+                    if (options.get(i).getOptionNum() == optionNum) {
+                        optionScore = options.get(i).getScore();
+                    }
+                }
+                selectedOptions.add(new Option(questionID, optionNum, optionText, optionScore));
                 box.setChecked(false);
             }
         }
@@ -201,29 +218,52 @@ public class SymptomTrackerActivity extends AppCompatActivity {
     public void insertQuestions() {
         String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19? (Select any/all that apply)";
         ArrayList<String> emergencySymptoms = new ArrayList<>();
+        ArrayList<Integer> symptomScore = new ArrayList<>();
         emergencySymptoms.add("Trouble breathing");
+        symptomScore.add(10);
         emergencySymptoms.add("Persistent pain or pressure in the chest");
+        symptomScore.add(10);
         emergencySymptoms.add("New confusion/disorientation");
+        symptomScore.add(10);
         emergencySymptoms.add("Inability to wake after sleeping");
+        symptomScore.add(10);
         emergencySymptoms.add("Bluish lips or face");
+        symptomScore.add(10);
         emergencySymptoms.add("Any other symptoms that are severe that concern you");
+        symptomScore.add(10);
         emergencySymptoms.add("None of the above");
+        symptomScore.add(10);
+        int questionID = db.createQuestion(emergencyQuestion, emergencySymptoms, symptomScore);
+        Log.d("Emergency symptoms question created", "questionID: " + questionID + " question: " + emergencyQuestion);
         int questionType1 = 1;
         int questionID1 = db.createQuestion(emergencyQuestion, emergencySymptoms, questionType1);
         Log.d("Emergency symptoms question created", "questionID: " + questionID1 + " question: " + emergencyQuestion);
 
         String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19? (Select any/all that apply)";
         ArrayList<String> commonSymptoms = new ArrayList<>();
+        symptomScore.clear();
         commonSymptoms.add("Fever");
+        symptomScore.add(1);
         commonSymptoms.add("Cough");
+        symptomScore.add(1);
         commonSymptoms.add("Shortness of breath");
+        symptomScore.add(1);
         commonSymptoms.add("Chills");
+        symptomScore.add(1);
         commonSymptoms.add("Repeated shaking with chills");
+        symptomScore.add(1);
         commonSymptoms.add("Muscle pain");
+        symptomScore.add(1);
         commonSymptoms.add("Headache");
+        symptomScore.add(1);
         commonSymptoms.add("Sore throat");
+        symptomScore.add(1);
         commonSymptoms.add("New loss of smell or taste");
+        symptomScore.add(1);
         commonSymptoms.add("None of the above");
+        symptomScore.add(1);
+        long questionID1 = db.createQuestion(commonQuestion, commonSymptoms, symptomScore);
+        Log.d("Common symptoms question created", "question_id: " + questionID1);
         int questionType2 = 1;
         long questionID2 = db.createQuestion(commonQuestion, commonSymptoms, questionType2);
         Log.d("Common symptoms question created", "question_id: " + questionID2);

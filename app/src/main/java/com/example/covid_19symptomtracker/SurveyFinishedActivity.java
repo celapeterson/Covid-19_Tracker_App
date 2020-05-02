@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.covid_19symptomtracker.database.DBHelper;
 import com.example.covid_19symptomtracker.database.Result;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class SurveyFinishedActivity extends AppCompatActivity {
     DBHelper db;
     ArrayList<Result> results = new ArrayList<>();
+    TextView recommendation;
 
 
     @Override
@@ -21,13 +23,16 @@ public class SurveyFinishedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey_finished);
 
-//        Bundle bundle = getIntent().getExtras();
-//        int surveyID = bundle.getInt("surveyID");
-//        String date = bundle.getString("date");
-//        int numQuestions = bundle.getInt("numQuestions");
-//
-//        Survey finishedSurvey = new Survey(surveyID, date);
+        recommendation = findViewById(R.id.recommendationTextView);
 
+        int score = Integer.parseInt(getIntent().getStringExtra("score"));
+        if (score <= 5) {
+            recommendation.setText("Stay Home");
+        } else if (5 < score && score <= 10) {
+            recommendation.setText("Stay Home and Call Doctor for Advice");
+        } else if (score > 10) {
+            recommendation.setText("Call Doctor");
+        }
     }
 
     @Override

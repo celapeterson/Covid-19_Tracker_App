@@ -5,12 +5,14 @@ public class Response {
     private int questionID;
     private int optionNum;
     private String response;
+    private int score;
 
-    public Response(int surveyID, int questionID, int optionNum, String response) {
+    public Response(int surveyID, int questionID, int optionNum, String response, int score) {
         this.surveyID = surveyID;
         this.questionID = questionID;
         this.optionNum = optionNum;
         this.response = response;
+        this.score = score;
     }
 
     public int getSurveyID() {
@@ -44,4 +46,6 @@ public class Response {
     public void setResponse(String response) {
         this.response = response;
     }
+
+    public int getScore() { return score; }
 }

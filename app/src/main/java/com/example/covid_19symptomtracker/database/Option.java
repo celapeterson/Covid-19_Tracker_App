@@ -5,11 +5,13 @@ public class Option {
     // refers to the order in which the questions are shown
     private int optionNum;
     private String option;
+    private int score;
 
-    public Option(int questionID, int optionNum, String option) {
+    public Option(int questionID, int optionNum, String option, int score) {
         this.questionID = questionID;
         this.optionNum = optionNum;
         this.option = option;
+        this.score = score;
     }
 
     public int getQuestionID() {
@@ -35,4 +37,6 @@ public class Option {
     public void setOptionText(String option) {
         this.option = option;
     }
+
+    public int getScore() { return score; };
 }
