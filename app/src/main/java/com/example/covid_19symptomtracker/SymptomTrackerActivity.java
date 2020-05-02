@@ -3,7 +3,6 @@ package com.example.covid_19symptomtracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,11 +28,11 @@ import java.util.Date;
 
 public class SymptomTrackerActivity extends AppCompatActivity {
     DBHelper db;
-    int questionIndex = 0;
+    Survey survey;
     ArrayList<QuestionOption> questionOptionList;
-    ArrayList<Result> resultList = new ArrayList<>();
-//    ArrayList<Response> responses;
     QuestionOption currentQuestion;
+    int questionIndex = 0;
+    ArrayList<Result> resultList = new ArrayList<>();
     TextView questionTextView;
     LinearLayout optionGroup;
     ArrayList<CheckBox> currentCheckBoxes = new ArrayList<>();
@@ -46,12 +45,12 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
         db = DBHelper.getInstance(this);
 
-        clearAllTables();
-        insertQuestions();
+//        clearAllTables();
+//        insertQuestions();
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         String date = dateFormat.format(new Date());
-        Survey survey = db.createSurvey(date);
+        survey = db.createSurvey(date);
         Log.d("Survey Created", "surveyID: " + survey.getId() + " Date: " + survey.getDate());
 
         questionOptionList = db.getAllQuestions();
@@ -68,35 +67,33 @@ public class SymptomTrackerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ArrayList<Option> selectedOptions = getSelectedOptions();
-                ArrayList<Response> responses = new ArrayList<>();
 
-                for(Option option : selectedOptions) {
-                    int surveyID = survey.getId();
-                    int questionID = currentQuestion.getQuestion().getId();
-                    int optionNum = option.getOptionNum();
-                    String response = option.getOptionText();
-                    responses.add(new Response(surveyID, questionID, optionNum, response));
-                }
+                if(!selectedOptions.isEmpty()) {
+                    ArrayList<Response> responses = new ArrayList<>();
 
-                Question question = currentQuestion.getQuestion();
-                resultList.add(new Result(question, responses));
+                    for(Option option : selectedOptions) {
+                        int surveyID = survey.getId();
+                        int questionID = currentQuestion.getQuestion().getId();
+                        int optionNum = option.getOptionNum();
+                        String response = option.getOptionText();
+                        responses.add(new Response(surveyID, questionID, optionNum, response));
+                    }
 
-                optionGroup.removeAllViews();
-                questionIndex++;
+                    Question question = currentQuestion.getQuestion();
+                    resultList.add(new Result(question, responses));
 
-                if(questionIndex < questionOptionList.size()) {
-                    currentQuestion = questionOptionList.get(questionIndex);
-                    setQuestionView();
-                    currentCheckBoxes = setOptionGroup();
-                } else {
-                    db.saveResults(resultList);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putInt("surveyID", survey.getId());
-//                    bundle.putString("date", survey.getDate());
-//                    bundle.putInt("numQuestions", questionIndex);
-                    Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
-//                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    optionGroup.removeAllViews();
+                    questionIndex++;
+
+                    if(questionIndex < questionOptionList.size()) {
+                        currentQuestion = questionOptionList.get(questionIndex);
+                        setQuestionView();
+                        currentCheckBoxes = setOptionGroup();
+                    } else {
+                        db.saveResults(resultList);
+                        Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -104,7 +101,8 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent=new Intent(this, StartingScreenActivity.class);
+        db.removeSurveyWithID(survey.getId());
+        Intent intent = new Intent(this, StartingScreenActivity.class);
         startActivity(intent);
         finish();
     }

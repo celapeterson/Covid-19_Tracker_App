@@ -125,7 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Survey> getSurveys() {
         ArrayList<Survey> surveys = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM survey ORDER BY survey_id ASC";
+        String selectQuery = "SELECT * FROM survey ORDER BY survey_id DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -144,6 +144,11 @@ public class DBHelper extends SQLiteOpenHelper {
         c.close();
         db.close();
         return surveys;
+    }
+
+    public void removeSurveyWithID(int surveyID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_SURVEY, KEY_SID + "=" + surveyID, null);
     }
 
     public int createQuestion(String question, ArrayList<String> options) {
