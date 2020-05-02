@@ -3,6 +3,7 @@ package com.example.covid_19symptomtracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,15 +28,15 @@ import java.util.Date;
 
 
 public class SymptomTrackerActivity extends AppCompatActivity {
-    private DBHelper db;
+    DBHelper db;
     int questionIndex = 0;
     ArrayList<QuestionOption> questionOptionList;
-    ArrayList<Result> resultList;
-    ArrayList<Response> responses;
+    ArrayList<Result> resultList = new ArrayList<>();
+//    ArrayList<Response> responses;
     QuestionOption currentQuestion;
     TextView questionTextView;
     LinearLayout optionGroup;
-    ArrayList<CheckBox> currentCheckBoxes;
+    ArrayList<CheckBox> currentCheckBoxes = new ArrayList<>();
     Button nextButton;
 
     @Override
@@ -45,47 +46,21 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
         db = DBHelper.getInstance(this);
 
-        db.clearDatabase("survey");
-        db.clearDatabase("question");
-        db.clearDatabase("option");
-        db.clearDatabase("response");
+        clearAllTables();
+        insertQuestions();
 
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         String date = dateFormat.format(new Date());
-        final Survey survey = db.createSurvey(date);
+        Survey survey = db.createSurvey(date);
         Log.d("Survey Created", "surveyID: " + survey.getId() + " Date: " + survey.getDate());
 
-        String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19? (Select any/all that apply)";
-        ArrayList<String> emergencySymptoms = new ArrayList<>();
-        emergencySymptoms.add("Trouble breathing");
-        emergencySymptoms.add("Persistent pain or pressure in the chest");
-        emergencySymptoms.add("New confusion/disorientation");
-        emergencySymptoms.add("Inability to wake after sleeping");
-        emergencySymptoms.add("Bluish lips or face");
-        emergencySymptoms.add("Any other symptoms that are severe that concern you");
-        int questionID = db.createQuestion(emergencyQuestion, emergencySymptoms);
-        Log.d("Emergency symptoms question created", "questionID: " + questionID + " question: " + emergencyQuestion);
-
-        String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19? (Select any/all that apply)";
-        ArrayList<String> commonSymptoms = new ArrayList<>();
-        commonSymptoms.add("Fever");
-        commonSymptoms.add("Cough");
-        commonSymptoms.add("Shortness of breath");
-        commonSymptoms.add("Chills");
-        commonSymptoms.add("Repeated shaking with chills");
-        commonSymptoms.add("Muscle pain");
-        commonSymptoms.add("Headache");
-        commonSymptoms.add("Sore throat");
-        commonSymptoms.add("New loss of smell or taste");
-        long questionID1 = db.createQuestion(commonQuestion, commonSymptoms);
-        Log.d("Common symptoms question created", "question_id: " + questionID1);
-
         questionOptionList = db.getAllQuestions();
-        resultList = new ArrayList<>();
         currentQuestion = questionOptionList.get(questionIndex);
-        questionTextView = (TextView) findViewById(R.id.textViewQuestion);
-        optionGroup = (LinearLayout) findViewById(R.id.optionLayout);
-        nextButton = (Button) findViewById(R.id.nextButton);
+
+        questionTextView = findViewById(R.id.textViewQuestion);
+        optionGroup = findViewById(R.id.optionLayout);
+        nextButton = findViewById(R.id.nextButton);
+
         setQuestionView();
         currentCheckBoxes = setOptionGroup();
 
@@ -93,7 +68,8 @@ public class SymptomTrackerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ArrayList<Option> selectedOptions = getSelectedOptions();
-                responses = new ArrayList<>();
+                ArrayList<Response> responses = new ArrayList<>();
+
                 for(Option option : selectedOptions) {
                     int surveyID = survey.getId();
                     int questionID = currentQuestion.getQuestion().getId();
@@ -114,16 +90,23 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                     currentCheckBoxes = setOptionGroup();
                 } else {
                     db.saveResults(resultList);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("surveyID", survey.getId());
-                    bundle.putString("date", survey.getDate());
-                    bundle.putInt("numQuestions", questionIndex);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("surveyID", survey.getId());
+//                    bundle.putString("date", survey.getDate());
+//                    bundle.putInt("numQuestions", questionIndex);
                     Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
-                    intent.putExtras(bundle);
+//                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent=new Intent(this, StartingScreenActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void setQuestionView() {
@@ -161,5 +144,41 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         }
 
         return selectedOptions;
+    }
+
+    public void insertQuestions() {
+        String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19? (Select any/all that apply)";
+        ArrayList<String> emergencySymptoms = new ArrayList<>();
+        emergencySymptoms.add("Trouble breathing");
+        emergencySymptoms.add("Persistent pain or pressure in the chest");
+        emergencySymptoms.add("New confusion/disorientation");
+        emergencySymptoms.add("Inability to wake after sleeping");
+        emergencySymptoms.add("Bluish lips or face");
+        emergencySymptoms.add("Any other symptoms that are severe that concern you");
+        emergencySymptoms.add("None of the above");
+        int questionID = db.createQuestion(emergencyQuestion, emergencySymptoms);
+        Log.d("Emergency symptoms question created", "questionID: " + questionID + " question: " + emergencyQuestion);
+
+        String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19? (Select any/all that apply)";
+        ArrayList<String> commonSymptoms = new ArrayList<>();
+        commonSymptoms.add("Fever");
+        commonSymptoms.add("Cough");
+        commonSymptoms.add("Shortness of breath");
+        commonSymptoms.add("Chills");
+        commonSymptoms.add("Repeated shaking with chills");
+        commonSymptoms.add("Muscle pain");
+        commonSymptoms.add("Headache");
+        commonSymptoms.add("Sore throat");
+        commonSymptoms.add("New loss of smell or taste");
+        commonSymptoms.add("None of the above");
+        long questionID1 = db.createQuestion(commonQuestion, commonSymptoms);
+        Log.d("Common symptoms question created", "question_id: " + questionID1);
+    }
+
+    public void clearAllTables() {
+        db.clearDatabase("survey");
+        db.clearDatabase("question");
+        db.clearDatabase("option");
+        db.clearDatabase("response");
     }
 }

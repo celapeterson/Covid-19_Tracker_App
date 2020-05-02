@@ -125,7 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Survey> getSurveys() {
         ArrayList<Survey> surveys = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM Surveys";
+        String selectQuery = "SELECT * FROM survey ORDER BY survey_id ASC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);

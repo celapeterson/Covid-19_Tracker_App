@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class PastResults extends AppCompatActivity {
     public static DBHelper db;
-    public static ArrayList<Survey> surveys = new ArrayList<>();
+    public static ArrayList<Survey> surveys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +31,11 @@ public class PastResults extends AppCompatActivity {
 
         ArrayList<String> displaySurveys = new ArrayList<>();
         for (Survey survey : surveys) {
-            displaySurveys.add(String.format("Symptom Results On:\nDate: " + survey.getDate()));
+            displaySurveys.add(String.format("Symptom Results From:\n" + survey.getDate()));
         }
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, displaySurveys);
-        ListView listView = (ListView) findViewById(R.id.surveyList);
+        ListView listView = findViewById(R.id.surveyList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

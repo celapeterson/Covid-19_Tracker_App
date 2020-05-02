@@ -21,7 +21,7 @@ public class StartingScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_starting_screen);
     }
 
-    public void startTracker(View view) {
+    public void startTrackerOnClick(View view) {
         scheduleNotification(getNotification());
 
         Intent intent = new Intent(this, SymptomTrackerActivity.class);
