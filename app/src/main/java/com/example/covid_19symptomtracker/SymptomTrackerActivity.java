@@ -110,12 +110,31 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                         }
                     } else {
                         db.saveResults(resultList);
-                        Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
-                        startActivity(intent);
+                        goToSurveyFinished();
                     }
                 }
             }
         });
+    }
+
+    private void goToSurveyFinished() {
+        int score = 0;
+        final int severeRisk = 10;
+        final int symptom = 1;
+        final int lifestyleRisk = 3;
+        if (resultList.get(0).getResponses().size() != 0) // emergancy questions
+            score += severeRisk;
+        for (int i = 0; i < resultList.get(1).getResponses().size(); i++) // common questions
+            score += symptom;
+        for (int i = 0; i < resultList.get(2).getResponses().size(); i++) // risk questions
+            score = score * lifestyleRisk;
+        if (resultList.get(3).getResponses().get(0).getOptionNum() == 1) // exposure question
+            score = score * lifestyleRisk;
+        if (resultList.get(4).getResponses().get(0).getOptionNum() != 2) // age question
+            score = score * lifestyleRisk;
+        Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
+        intent.putExtra("score", score);
+        startActivity(intent);
     }
 
     @Override
@@ -207,7 +226,6 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         emergencySymptoms.add("Inability to wake after sleeping");
         emergencySymptoms.add("Bluish lips or face");
         emergencySymptoms.add("Any other symptoms that are severe that concern you");
-        emergencySymptoms.add("None of the above");
         int questionType1 = 1;
         int questionID1 = db.createQuestion(emergencyQuestion, emergencySymptoms, questionType1);
         Log.d("Emergency symptoms question created", "questionID: " + questionID1 + " question: " + emergencyQuestion);
@@ -223,7 +241,6 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         commonSymptoms.add("Headache");
         commonSymptoms.add("Sore throat");
         commonSymptoms.add("New loss of smell or taste");
-        commonSymptoms.add("None of the above");
         int questionType2 = 1;
         long questionID2 = db.createQuestion(commonQuestion, commonSymptoms, questionType2);
         Log.d("Common symptoms question created", "question_id: " + questionID2);
@@ -239,7 +256,6 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         riskOptions.add("Cirrhosis of the liver");
         riskOptions.add("Extreme obesity");
         riskOptions.add("Pregnancy");
-        riskOptions.add("None of the above");
         int questionType3 = 1;
         long questionID3 = db.createQuestion(riskQuestion, riskOptions, questionType3);
         Log.d("Risk question created", "question_id: " + questionID3);

@@ -25,12 +25,15 @@ public class SurveyFinishedActivity extends AppCompatActivity {
 
         recommendation = findViewById(R.id.recommendationTextView);
 
+        final int liteRisk = 2;
+        final int highRisk = 10;
+
         int score = Integer.parseInt(getIntent().getStringExtra("score"));
-        if (score <= 5) {
+        if (score < 2) {
             recommendation.setText("Stay Home");
-        } else if (5 < score && score <= 10) {
+        } else if (2 <= score && score < 10) {
             recommendation.setText("Stay Home and Call Doctor for Advice");
-        } else if (score > 10) {
+        } else if (score >= 10) {
             recommendation.setText("Call Doctor");
         }
     }
