@@ -1,6 +1,7 @@
 package com.example.covid_19symptomtracker;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -36,21 +37,27 @@ public class ViewResult extends AppCompatActivity {
 
         ArrayList<QuestionOption> questions = PastResults.db.getAllQuestions();
         // numQuestion to be changed to the total number on questions
-        ArrayList<Result> results = PastResults.db.getResultsForSurvey(survey, 2);
+        ArrayList<Result> results = PastResults.db.getResultsForSurvey(survey, 5);
 
         String resultsView = "";
         for (int i = 0; i < questions.size(); i++) {
-            resultsView = resultsView.concat(questions.get(i).getQuestion().getQuestionText());
+            resultsView = resultsView.concat(i+1 + ") " + questions.get(i).getQuestion().getQuestionText());
             resultsView = resultsView.concat("\n");
-            for (int j = 0; j < results.get(i).getResponses().size(); j++) {
-                resultsView = resultsView.concat("- " + results.get(i).getResponses().get(j).getResponse());
-                resultsView = resultsView.concat("\n");
+            if(results.get(i).getResponses().isEmpty()) {
+                resultsView = resultsView.concat("- No options selected\n");
+            } else {
+                for (int j = 0; j < results.get(i).getResponses().size(); j++) {
+                    resultsView = resultsView.concat("- " + results.get(i).getResponses().get(j).getResponse());
+                    resultsView = resultsView.concat("\n");
+                }
             }
+
             resultsView = resultsView.concat("\n");
         }
 
         textView = new TextView(this);
         textView.setText(resultsView);
+        textView.setTextColor(Color.BLACK);
         resultsLayout.addView(textView);
     }
 

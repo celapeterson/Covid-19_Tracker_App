@@ -75,14 +75,14 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<Option> selectedOptions;
+                ArrayList<Option> selectedOptions = new ArrayList<>();
                 if(currentQuestion.getQuestion().getType() == 1) {
                     selectedOptions = getSelectedOptionsCheckBox();
                 } else {
                     selectedOptions = getSelectedOptionsRadio();
                 }
 
-                if(!selectedOptions.isEmpty()) {
+                if(currentQuestion.getQuestion().getType() == 1 || (currentQuestion.getQuestion().getType() == 2 && !selectedOptions.isEmpty())){
                     ArrayList<Response> responses = new ArrayList<>();
 
                     for(Option option : selectedOptions) {
@@ -112,7 +112,9 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                         db.saveResults(resultList);
                         goToSurveyFinished();
                     }
+
                 }
+
             }
         });
     }
@@ -121,17 +123,21 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         int score = 0;
         final int severeRisk = 10;
         final int symptom = 1;
-        final int lifestyleRisk = 3;
-        if (resultList.get(0).getResponses().size() != 0) // emergancy questions
+        final int lifestyleRisk = 4;
+        final int exposureRisk = 4;
+        final int ageRisk = 4;
+
+        if (resultList.get(0).getResponses().size() != 0) // emergency questions
             score += severeRisk;
         for (int i = 0; i < resultList.get(1).getResponses().size(); i++) // common questions
             score += symptom;
         for (int i = 0; i < resultList.get(2).getResponses().size(); i++) // risk questions
             score = score * lifestyleRisk;
         if (resultList.get(3).getResponses().get(0).getOptionNum() == 1) // exposure question
-            score = score * lifestyleRisk;
-        if (resultList.get(4).getResponses().get(0).getOptionNum() != 2) // age question
-            score = score * lifestyleRisk;
+            score = score * exposureRisk;
+        if (resultList.get(4).getResponses().get(0).getOptionNum() == 3) // age question
+            score = score * ageRisk;
+
         Bundle bundle = new Bundle();
         bundle.putInt("score", score);
         Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
@@ -220,7 +226,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
     }
 
     public void insertQuestions() {
-        String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19? (Select any/all that apply)";
+        String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19?\nSelect any that apply or press next to advance to next question.";
         ArrayList<String> emergencySymptoms = new ArrayList<>();
         emergencySymptoms.add("Trouble breathing");
         emergencySymptoms.add("Persistent pain or pressure in the chest");
@@ -232,7 +238,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         int questionID1 = db.createQuestion(emergencyQuestion, emergencySymptoms, questionType1);
         Log.d("Emergency symptoms question created", "questionID: " + questionID1 + " question: " + emergencyQuestion);
 
-        String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19? (Select any/all that apply)";
+        String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19?\nSelect any that apply or press next to advance to next question.";
         ArrayList<String> commonSymptoms = new ArrayList<>();
         commonSymptoms.add("Fever");
         commonSymptoms.add("Cough");
@@ -247,7 +253,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         long questionID2 = db.createQuestion(commonQuestion, commonSymptoms, questionType2);
         Log.d("Common symptoms question created", "question_id: " + questionID2);
 
-        String riskQuestion = "Do any of these apply to you? (Select all that apply";
+        String riskQuestion = "Do any of these apply to you?\nSelect any that apply or press next to advance to next question.";
         ArrayList<String> riskOptions = new ArrayList<>();
         riskOptions.add("Moderate to severe asthma or chronic lung disease");
         riskOptions.add("Cancer treatment or medicines causing immune suppression");
