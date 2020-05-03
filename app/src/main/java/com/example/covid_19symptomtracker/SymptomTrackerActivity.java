@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +36,6 @@ public class SymptomTrackerActivity extends AppCompatActivity {
     TextView questionTextView;
     LinearLayout optionGroup;
     ArrayList<CheckBox> currentCheckBoxes = new ArrayList<>();
-    ArrayList<RadioButton> currentRadioButtons = new ArrayList<>();
     Button nextButton;
 
     @Override
@@ -48,9 +45,8 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
         db = DBHelper.getInstance(this);
 
-//        db.onUpgrade(db.getWritableDatabase(), 1, 2);
-        clearAllTables();
-        insertQuestions();
+//        clearAllTables();
+//        insertQuestions();
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         String date = dateFormat.format(new Date());
@@ -65,21 +61,29 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.nextButton);
 
         setQuestionView();
+<<<<<<< HEAD
         if(currentQuestion.getQuestion().getType() == 1) {
             currentCheckBoxes = setOptionGroupCheckBox();
         } else {
             currentRadioButtons = setOptionGroupRadio();
         }
+=======
+        currentCheckBoxes = setOptionGroup();
+>>>>>>> parent of 603e12c... Updated DB to support checkboxes and radio buttons and added more questions
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+<<<<<<< HEAD
                 ArrayList<Option> selectedOptions;
                 if(currentQuestion.getQuestion().getType() == 1) {
                     selectedOptions = getSelectedOptionsCheckBox();
                 } else {
                     selectedOptions = getSelectedOptionsRadio();
                 }
+=======
+                ArrayList<Option> selectedOptions = getSelectedOptions();
+>>>>>>> parent of 603e12c... Updated DB to support checkboxes and radio buttons and added more questions
 
                 if(!selectedOptions.isEmpty()) {
                     ArrayList<Response> responses = new ArrayList<>();
@@ -102,6 +106,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                     if(questionIndex < questionOptionList.size()) {
                         currentQuestion = questionOptionList.get(questionIndex);
                         setQuestionView();
+<<<<<<< HEAD
 
                         if(currentQuestion.getQuestion().getType() == 1) {
                             currentCheckBoxes = setOptionGroupCheckBox();
@@ -109,6 +114,9 @@ public class SymptomTrackerActivity extends AppCompatActivity {
                             currentRadioButtons = setOptionGroupRadio();
                         }
 
+=======
+                        currentCheckBoxes = setOptionGroup();
+>>>>>>> parent of 603e12c... Updated DB to support checkboxes and radio buttons and added more questions
                     } else {
                         db.saveResults(resultList);
                         goToSurveyFinished();
@@ -138,7 +146,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         questionTextView.setText(currentQuestion.getQuestion().getQuestionText());
     }
 
-    public ArrayList<CheckBox> setOptionGroupCheckBox() {
+    public ArrayList<CheckBox> setOptionGroup() {
         ArrayList<Option> options = currentQuestion.getOptions();
         ArrayList<CheckBox> checkBoxes = new ArrayList<>();
 
@@ -155,26 +163,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         return checkBoxes;
     }
 
-    public ArrayList<RadioButton> setOptionGroupRadio() {
-        ArrayList<Option> options = currentQuestion.getOptions();
-        ArrayList<RadioButton> radioButtons = new ArrayList<>();
-        RadioGroup radioGroup = new RadioGroup(this);
-
-        for(Option option : options) {
-            String optionText = option.getOptionText();
-            RadioButton newOption = new RadioButton(this);
-            newOption.setId(option.getOptionNum());
-            newOption.setText(optionText);
-            newOption.setGravity(Gravity.LEFT);
-            radioGroup.addView(newOption);
-            radioButtons.add(newOption);
-        }
-        optionGroup.addView(radioGroup);
-
-        return radioButtons;
-    }
-
-    public ArrayList<Option> getSelectedOptionsCheckBox() {
+    public ArrayList<Option> getSelectedOptions() {
         ArrayList<Option> selectedOptions = new ArrayList<>();
 
         for(CheckBox box : currentCheckBoxes) {
@@ -197,6 +186,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         return selectedOptions;
     }
 
+<<<<<<< HEAD
     public ArrayList<Option> getSelectedOptionsRadio() {
         ArrayList<Option> selectedOptions = new ArrayList<>();
 
@@ -220,6 +210,8 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         return selectedOptions;
     }
 
+=======
+>>>>>>> parent of 603e12c... Updated DB to support checkboxes and radio buttons and added more questions
     public void insertQuestions() {
         String emergencyQuestion = "Are you experiencing any of theses emergency warning signs for COVID-19? (Select any/all that apply)";
         ArrayList<String> emergencySymptoms = new ArrayList<>();
@@ -237,8 +229,12 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         emergencySymptoms.add("Any other symptoms that are severe that concern you");
         symptomScore.add(10);
         emergencySymptoms.add("None of the above");
+<<<<<<< HEAD
         symptomScore.add(10);
         int questionID = db.createQuestion(emergencyQuestion, emergencySymptoms, symptomScore);
+=======
+        int questionID = db.createQuestion(emergencyQuestion, emergencySymptoms);
+>>>>>>> parent of 603e12c... Updated DB to support checkboxes and radio buttons and added more questions
         Log.d("Emergency symptoms question created", "questionID: " + questionID + " question: " + emergencyQuestion);
 
         String commonQuestion = "Are you experiencing any of these common symptoms of COVID-19? (Select any/all that apply)";
@@ -263,6 +259,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         commonSymptoms.add("New loss of smell or taste");
         symptomScore.add(1);
         commonSymptoms.add("None of the above");
+<<<<<<< HEAD
         symptomScore.add(1);
         long questionID1 = db.createQuestion(commonQuestion, commonSymptoms, symptomScore);
         Log.d("Common symptoms question created", "question_id: " + questionID1);
@@ -317,6 +314,10 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         int questionType5 = 2;
         long questionID5 = db.createQuestion(ageQuestion, ageOptions, symptomScore);
         Log.d("Age question created", "question_id: " + questionID5);
+=======
+        long questionID1 = db.createQuestion(commonQuestion, commonSymptoms);
+        Log.d("Common symptoms question created", "question_id: " + questionID1);
+>>>>>>> parent of 603e12c... Updated DB to support checkboxes and radio buttons and added more questions
     }
 
     public void clearAllTables() {
