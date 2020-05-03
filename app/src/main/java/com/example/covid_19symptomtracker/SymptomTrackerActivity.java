@@ -48,7 +48,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
         db = DBHelper.getInstance(this);
 
-//        db.onUpgrade(db.getWritableDatabase(), 1, 2);
+        db.onUpgrade(db.getWritableDatabase(), 1, 2);
         clearAllTables();
         insertQuestions();
 
