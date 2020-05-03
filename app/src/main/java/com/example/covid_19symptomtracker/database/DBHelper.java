@@ -49,11 +49,11 @@ public class DBHelper extends SQLiteOpenHelper {
     // Question Table - column names
     private static final String KEY_QID = "question_id";
     private static final String KEY_QUESTION = "question";
+    private static final String KEY_TYPE = "type";
 
     // Option Table - column names
     private static final String KEY_QUESTION_ID= "question_id";
     private static final String KEY_OPTION_NUM = "option_num";
-    private static final String KEY_OPTION_SCORE = "option_score";
     private static final String KEY_OPTION = "option";
 
     // Response Table - column names
@@ -66,7 +66,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + " TEXT" + ")";
 
     private static final String CREATE_TABLE_QUESTION = "CREATE TABLE IF NOT EXISTS "
-            + TABLE_QUESTION + "(" + KEY_QID + " INTEGER PRIMARY KEY," + KEY_QUESTION + " TEXT" + ")";
+            + TABLE_QUESTION + "(" + KEY_QID + " INTEGER PRIMARY KEY," + KEY_QUESTION + " TEXT,"
+            + KEY_TYPE + " INTEGER" + ")";
 
     private static final String CREATE_TABLE_OPTION = "CREATE TABLE IF NOT EXISTS "
             + TABLE_OPTION + "(" + KEY_QUESTION_ID + " INTEGER NOT NULL," + KEY_OPTION_NUM +
@@ -152,30 +153,30 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete(TABLE_SURVEY, KEY_SID + "=" + surveyID, null);
     }
 
-    public int createQuestion(String question, ArrayList<String> options, ArrayList<Integer> symptomScore) {
+    public int createQuestion(String question, ArrayList<String> options, int type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_QUESTION, question);
+        values.put(KEY_TYPE, type);
 
         long questionID = db.insert(TABLE_QUESTION, null, values);
 
         for(int i = 0; i < options.size(); i++) {
             int optionNum = i + 1;
-            createOption(questionID, optionNum, options.get(i), symptomScore.get(i));
+            createOption(questionID, optionNum, options.get(i));
         }
 
         db.close();
         return (int) questionID;
     }
 
-    public void createOption(long questionID, int optionNum, String option, int optionScore) {
+    public void createOption(long questionID, int optionNum, String option) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_QUESTION_ID, questionID);
         values.put(KEY_OPTION_NUM, optionNum);
-        values.put(KEY_OPTION_SCORE, optionScore);
         values.put(KEY_OPTION, option);
 
         db.insert(TABLE_OPTION, null, values);
@@ -194,12 +195,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int questionIDIndex = c.getColumnIndex(KEY_QID);
         int questionIndex = c.getColumnIndex(KEY_QUESTION);
+        int questionTypeIndex = c.getColumnIndex(KEY_TYPE);
 
         if(c.moveToFirst()) {
             do {
                 int questionID = c.getInt(questionIDIndex);
                 String questionText = c.getString(questionIndex);
-                Question question = new Question(questionID, questionText);
+                int questionType = c.getInt(questionTypeIndex);
+                Question question = new Question(questionID, questionText, questionType);
                 ArrayList<Option> options = getAllOptionsForQuestion(questionID);
                 questions.add(new QuestionOption(question, options));
             } while(c.moveToNext());
@@ -219,15 +222,13 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(selectQuery, null);
 
         int optionNumIndex = c.getColumnIndex(KEY_OPTION_NUM);
-        int optionScoreIndex = c.getColumnIndex(KEY_OPTION_SCORE);
         int optionIndex = c.getColumnIndex(KEY_OPTION);
 
         if(c.moveToFirst()) {
             do {
                 int optionNum = c.getInt(optionNumIndex);
-                int optionScore = c.getInt(optionScoreIndex);
                 String optionText = c.getString(optionIndex);
-                Option option = new Option(questionID, optionNum, optionText, optionScore);
+                Option option = new Option(questionID, optionNum, optionText);
                 options.add(option);
             } while(c.moveToNext());
         }
@@ -266,7 +267,7 @@ public class DBHelper extends SQLiteOpenHelper {
             ArrayList<Response> responses = new ArrayList<>();
 
             String selectQuery = String.format("SELECT * FROM response WHERE survey_id LIKE '%d' AND question_id " +
-                                                "LIKE '%d' ORDER BY option_num ASC", survey.getId(), question.getId());
+                    "LIKE '%d' ORDER BY option_num ASC", survey.getId(), question.getId());
             Log.e(LOG, selectQuery);
 
             SQLiteDatabase db = this.getReadableDatabase();
@@ -275,15 +276,13 @@ public class DBHelper extends SQLiteOpenHelper {
 //            int surveyIDIndex = c.getColumnIndex(KEY_SURVEY_ID);
 //            int questionIDIndex = c.getColumnIndex(KEY_QUESTION_ID);
             int optionNumIndex = c.getColumnIndex(KEY_OPTION_NUM);
-            int optionScoreIndex = c.getColumnIndex(KEY_OPTION_SCORE);
             int responseIndex = c.getColumnIndex(KEY_RESPONSE);
 
             if(c.moveToFirst()) {
                 do {
                     int optionNum = c.getInt(optionNumIndex);
-                    int optionScore = c.getInt(optionScoreIndex);
                     String responseText = c.getString(responseIndex);
-                    Response response = new Response(survey.getId(), question.getId(), optionNum, responseText, optionScore);
+                    Response response = new Response(survey.getId(), question.getId(), optionNum, responseText);
                     responses.add(response);
                 } while(c.moveToNext());
             }
@@ -307,6 +306,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int questionIDIndex = c.getColumnIndex(KEY_QUESTION_ID);
         int questionIndex = c.getColumnIndex(KEY_QUESTION);
+        int questionTypeIndex = c.getColumnIndex(KEY_TYPE);
 
         if(c != null) {
             c.moveToFirst();
@@ -314,8 +314,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int id = c.getInt(questionIDIndex);
         String questionText = c.getString(questionIndex);
+        int questionType = c.getInt(questionTypeIndex);
 
-        Question question = new Question(id, questionText);
+        Question question = new Question(id, questionText, questionType);
 
         c.close();
         db.close();
