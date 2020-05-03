@@ -132,8 +132,10 @@ public class SymptomTrackerActivity extends AppCompatActivity {
             score = score * lifestyleRisk;
         if (resultList.get(4).getResponses().get(0).getOptionNum() != 2) // age question
             score = score * lifestyleRisk;
+        Bundle bundle = new Bundle();
+        bundle.putInt("score", score);
         Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
-        intent.putExtra("score", score);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

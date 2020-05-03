@@ -28,7 +28,9 @@ public class SurveyFinishedActivity extends AppCompatActivity {
         final int liteRisk = 2;
         final int highRisk = 10;
 
-        int score = Integer.parseInt(getIntent().getStringExtra("score"));
+        Bundle bundle = this.getIntent().getExtras();
+        int score = bundle.getInt("score");
+
         if (score < 2) {
             recommendation.setText("Stay Home");
         } else if (2 <= score && score < 10) {
