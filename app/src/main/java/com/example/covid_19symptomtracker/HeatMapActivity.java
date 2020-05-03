@@ -171,32 +171,32 @@ public class HeatMapActivity extends AppCompatActivity {
         } else if (cases<10) {
             //less than 10 cases
             circleOptions.radius(cases * 15);
-            circleOptions.strokeColor(Color.GREEN);
-            circleOptions.fillColor(Color.GREEN);
+            circleOptions.strokeColor(Color.RED);
+            circleOptions.fillColor(0x30ff0000);
             circleOptions.strokeWidth(2);
             mMap.addMarker(new MarkerOptions().position(center).title(name + ": " + cases).alpha((float)0.40)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.outputonlinepngtools)));
         } else if (cases < 100) {
             //between 10 and 100
             circleOptions.radius(cases * 15);
-            circleOptions.strokeColor(Color.GREEN);
-            circleOptions.fillColor(Color.GREEN);
+            circleOptions.strokeColor(Color.RED);
+            circleOptions.fillColor(0x30ff0000);
             circleOptions.strokeWidth(2);
             mMap.addMarker(new MarkerOptions().position(center).title(name + ": " + cases).alpha((float)0.60)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.outputonlinepngtools)));
         } else if (cases < 1000) {
             //between 1,000 and 2,000 cases
             circleOptions.radius(cases * 15);
-            circleOptions.strokeColor(Color.GREEN);
-            circleOptions.fillColor(Color.GREEN);
+            circleOptions.strokeColor(Color.RED);
+            circleOptions.fillColor(0x30ff0000);
             circleOptions.strokeWidth(2);
             mMap.addMarker(new MarkerOptions().position(center).title(name + ": " + cases).alpha((float)0.90)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.outputonlinepngtools)));
         } else {
             //more than 2,000 cases
             circleOptions.radius(cases * 15);
-            circleOptions.strokeColor(Color.GREEN);
-            circleOptions.fillColor(Color.GREEN);
+            circleOptions.strokeColor(Color.RED);
+            circleOptions.fillColor(0x30ff0000);
             circleOptions.strokeWidth(2);
             mMap.addMarker(new MarkerOptions().position(center).title(name + ": " + cases).alpha((float)1)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.outputonlinepngtools)));
