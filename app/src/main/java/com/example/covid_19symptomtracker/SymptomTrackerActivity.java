@@ -49,8 +49,9 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         db = DBHelper.getInstance(this);
 
 //        db.onUpgrade(db.getWritableDatabase(), 1, 2);
-        clearAllTables();
-        insertQuestions();
+//        clearAllTables();
+//        insertQuestions();
+//        clearSurveyAndResponseTables();
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         String date = dateFormat.format(new Date());
@@ -290,6 +291,11 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         db.clearDatabase("survey");
         db.clearDatabase("question");
         db.clearDatabase("option");
+        db.clearDatabase("response");
+    }
+
+    public void clearSurveyAndResponseTables() {
+        db.clearDatabase("survey");
         db.clearDatabase("response");
     }
 }
