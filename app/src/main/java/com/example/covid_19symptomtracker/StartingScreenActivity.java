@@ -11,7 +11,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
+
+import java.util.Calendar;
 
 public class StartingScreenActivity extends AppCompatActivity {
 
@@ -39,7 +42,8 @@ public class StartingScreenActivity extends AppCompatActivity {
             alarmManager.cancel(alarmIntent);
         }
         if (alarmManager != null)
-            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_DAY, alarmIntent);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime()
+                    + AlarmManager.INTERVAL_DAY, AlarmManager.INTERVAL_DAY, alarmIntent);
     }
 
     private Notification getNotification() {
