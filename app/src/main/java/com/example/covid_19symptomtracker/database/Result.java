@@ -6,6 +6,7 @@ public class Result {
     private Question question;
     private ArrayList<Response> responses;
 
+
     public Result(Question question, ArrayList<Response> responses) {
         this.question = question;
         this.responses = responses;

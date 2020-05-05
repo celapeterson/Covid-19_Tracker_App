@@ -45,6 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Survey Table - column names
     private static final String KEY_SID = "survey_id";
     private static final String KEY_DATE = "date";
+    private static final String KEY_RECOMMENDATION = "recommendation";
 
     // Question Table - column names
     private static final String KEY_QID = "question_id";
@@ -63,7 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Table Create Statements
     private static final String CREATE_TABLE_SURVEY = "CREATE TABLE IF NOT EXISTS "
             + TABLE_SURVEY + "(" + KEY_SID + " INTEGER PRIMARY KEY," + KEY_DATE
-            + " TEXT" + ")";
+            + " TEXT," + KEY_RECOMMENDATION + " TEXT" + ")";
 
     private static final String CREATE_TABLE_QUESTION = "CREATE TABLE IF NOT EXISTS "
             + TABLE_QUESTION + "(" + KEY_QID + " INTEGER PRIMARY KEY," + KEY_QUESTION + " TEXT,"
@@ -81,7 +82,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         // creating required tables
         db.execSQL(CREATE_TABLE_SURVEY);
         db.execSQL(CREATE_TABLE_QUESTION);
@@ -134,18 +134,61 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int idIndex = c.getColumnIndex(KEY_SID);
         int dateIndex = c.getColumnIndex(KEY_DATE);
+        int recommendationIndex = c.getColumnIndex(KEY_RECOMMENDATION);
 
         if(c.moveToFirst()) {
             do {
                 int surveyID = c.getInt(idIndex);
                 String dateText = c.getString(dateIndex);
-                Survey survey = new Survey(surveyID, dateText);
+                String recommendation = c.getString(recommendationIndex);
+                Survey survey = new Survey(surveyID, dateText, recommendation);
                 surveys.add(survey);
             } while(c.moveToNext());
         }
         c.close();
         db.close();
         return surveys;
+    }
+
+    public Survey getSurveyWithID(int surveyID) {
+        String selectQuery = String.format("SELECT * FROM survey WHERE survey_id LIKE '%d'", surveyID);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        int surveyIDIndex = c.getColumnIndex(KEY_SID);
+        int surveyDateIndex = c.getColumnIndex(KEY_DATE);
+
+        if(c != null) {
+            c.moveToFirst();
+        }
+
+        int id = c.getInt(surveyIDIndex);
+        String date = c.getString(surveyDateIndex);
+
+        Survey survey = new Survey(id, date);
+
+        c.close();
+        db.close();
+        return survey;
+    }
+
+    public void saveRecommendationForSurvey(int surveyID, String recommendation) {
+//        String updateQuery = String.format("UPDATE survey SET recommendation = 's' WHERE survey_id = 'd'", recommendation, surveyID);
+//
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        db.rawQuery(updateQuery, null);
+//
+//        db.close();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_RECOMMENDATION, recommendation);
+
+        int rc = db.update(TABLE_SURVEY, values, "survey_id =" + surveyID, null);
+
+        db.close();
     }
 
     public void removeSurveyWithID(int surveyID) {

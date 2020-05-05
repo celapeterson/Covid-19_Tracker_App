@@ -48,7 +48,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
         db = DBHelper.getInstance(this);
 
-//        db.onUpgrade(db.getWritableDatabase(), 1, 2);
+//        db.onUpgrade(db.getWritableDatabase(), 2, 3);
 //        clearAllTables();
 //        insertQuestions();
 //        clearSurveyAndResponseTables();
@@ -141,6 +141,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putInt("score", score);
+        bundle.putInt("surveyID", survey.getId());
         Intent intent = new Intent(SymptomTrackerActivity.this, SurveyFinishedActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);

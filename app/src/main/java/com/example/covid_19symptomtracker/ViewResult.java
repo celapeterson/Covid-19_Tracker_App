@@ -3,6 +3,7 @@ package com.example.covid_19symptomtracker;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,7 +56,10 @@ public class ViewResult extends AppCompatActivity {
             resultsView = resultsView.concat("\n");
         }
 
+        resultsView = resultsView.concat("Recommendation:\n" + survey.getRecommendation());
+
         textView = new TextView(this);
+        textView.setAutoLinkMask(Linkify.ALL);
         textView.setText(resultsView);
         textView.setTextColor(Color.BLACK);
         resultsLayout.addView(textView);
