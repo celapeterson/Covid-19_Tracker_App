@@ -62,7 +62,8 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         }
 
         // db.onUpgrade(db.getWritableDatabase(), 2, 3);
-        // clearAllTables();
+//        clearAllTables();
+//        insertQuestions();
         // clearSurveyAndResponseTables();
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
@@ -161,10 +162,24 @@ public class SymptomTrackerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        db.removeSurveyWithID(survey.getId());
-        Intent intent = new Intent(this, StartingScreenActivity.class);
-        startActivity(intent);
-        finish();
+        if(questionIndex > 0) {
+            questionIndex--;
+            currentQuestion = questionOptionList.get(questionIndex);
+
+            setQuestionView();
+            optionGroup.removeAllViews();
+
+            if(currentQuestion.getQuestion().getType() == 1) {
+                currentCheckBoxes = setOptionGroupCheckBox();
+            } else {
+                currentRadioButtons = setOptionGroupRadio();
+            }
+        } else {
+            db.removeSurveyWithID(survey.getId());
+            Intent intent = new Intent(this, StartingScreenActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void setQuestionView() {
