@@ -2,8 +2,11 @@ package com.example.covid_19symptomtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -46,12 +49,22 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_symptom_tracker);
 
-        db = DBHelper.getInstance(this);
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        boolean firstTime = sharedPreferences.getBoolean("first_time", true);
+        if (firstTime) {
+            //code that runs only first time this activity is created
+            db = DBHelper.getInstance(this);
+            clearAllTables();
+            insertQuestions();
+            clearSurveyAndResponseTables();
 
-//        db.onUpgrade(db.getWritableDatabase(), 2, 3);
-//        clearAllTables();
-//        insertQuestions();
-//        clearSurveyAndResponseTables();
+            sharedPreferences.edit().putBoolean("first_time", false).commit();
+        } else {
+            //code for if the database has already been initialized
+            db = DBHelper.getInstance(this);
+        }
+
+        // db.onUpgrade(db.getWritableDatabase(), 2, 3);
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         String date = dateFormat.format(new Date());
