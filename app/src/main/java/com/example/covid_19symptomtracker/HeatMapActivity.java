@@ -91,7 +91,7 @@ public class HeatMapActivity extends AppCompatActivity {
                     JSONArray features = object.getJSONArray("features");
 
                     for(int i = 0; i < counties.length; i++){
-                        attributes = features.getJSONObject(i); // Object 0
+                        attributes = features.getJSONObject(i); // Generic JSONObject in JSONArray
                         attributes = attributes.getJSONObject("attributes"); // Actual attributes object
                         counties[i] = attributes.getString("NAME");
                         cases[i] = attributes.getInt("POSITIVE");
