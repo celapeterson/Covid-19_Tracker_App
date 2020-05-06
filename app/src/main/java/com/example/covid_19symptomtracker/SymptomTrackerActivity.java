@@ -54,10 +54,7 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         if (firstTime) {
             //code that runs only first time this activity is created
             db = DBHelper.getInstance(this);
-            clearAllTables();
             insertQuestions();
-            clearSurveyAndResponseTables();
-
             sharedPreferences.edit().putBoolean("first_time", false).commit();
         } else {
             //code for if the database has already been initialized
@@ -65,6 +62,8 @@ public class SymptomTrackerActivity extends AppCompatActivity {
         }
 
         // db.onUpgrade(db.getWritableDatabase(), 2, 3);
+        // clearAllTables();
+        // clearSurveyAndResponseTables();
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         String date = dateFormat.format(new Date());
